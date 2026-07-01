@@ -141,3 +141,13 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Frontend
+frontend/node_modules
+frontend/.env.local
+frontend/dist
+
+# Backend (we'll add Java stuff later)
+backend/target
+backend/.env
+*.jar
