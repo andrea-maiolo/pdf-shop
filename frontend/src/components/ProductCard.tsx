@@ -1,46 +1,33 @@
-import { useNavigate } from "react-router-dom";
-import { Product } from "../types";
-import { useUnsplashImage } from "../hooks/useUnsplashImage";
-import { unsplashQueries } from "../api/mockProducts";
-
-interface Props {
-  product: Product;
-  index: number;
+interface PhotoCard {
+  prod: Record<string, any>;
 }
 
-export default function ProductCard({ product, index }: Props) {
-  const navigate = useNavigate();
-  const { imageUrl, loading } = useUnsplashImage(unsplashQueries[index]);
+const ProductCard = function ({ prod }: PhotoCard) {
+  const imageUrl = prod.urls?.regular;
+  const altText = prod.alt_description || "Unsplash Photo";
+  const photographerName = prod.user?.name || "Unknown Photographer";
+  const photographerUsername = prod.user?.username;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-transform hover:-translate-y-1 hover:shadow-md duration-200">
-      {/* Cover image */}
-      <div className="h-48 bg-gray-100 overflow-hidden">
-        {loading ? (
-          <div className="h-full w-full animate-pulse bg-gray-200" />
-        ) : imageUrl ? (
-          <img src={imageUrl} alt={product.title} className="h-full w-full object-cover" />
-        ) : (
-          <div className="h-full w-full flex items-center justify-center text-gray-400 text-sm">No image</div>
+    <div style={{ border: "1px solid #ddd", borderRadius: "8px", padding: "12px", margin: "10px", maxWidth: "300px" }}>
+      <img src={imageUrl} alt={altText} style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "4px" }} />
+      <div style={{ marginTop: "8px", fontSize: "14px" }}>
+        <p>
+          📷 <strong>By:</strong> {photographerName}
+        </p>
+
+        {photographerUsername && (
+          <a
+            href={`https://unsplash.com/@${photographerUsername}`}
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "#0070f3", textDecoration: "none", fontSize: "12px" }}
+          >
+            View Unsplash Profile
+          </a>
         )}
-      </div>
-
-      {/* Content */}
-      <div className="p-5 flex flex-col flex-1">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h2 className="text-base font-semibold text-gray-800 leading-snug">{product.title}</h2>
-          <span className="text-indigo-600 font-bold text-sm whitespace-nowrap">€{product.price.toFixed(2)}</span>
-        </div>
-
-        <p className="text-sm text-gray-500 flex-1 leading-relaxed">{product.description}</p>
-
-        <button
-          onClick={() => navigate(`/checkout/${product.id}`)}
-          className="mt-5 w-full bg-indigo-600 text-white text-sm font-medium py-2.5 rounded-xl hover:bg-indigo-700 active:scale-95 transition-all duration-150"
-        >
-          Buy for €{product.price.toFixed(2)}
-        </button>
       </div>
     </div>
   );
-}
+};
+export default ProductCard;
